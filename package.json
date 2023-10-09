@@ -16,6 +16,14 @@
       {
         "command": "dione.editCode",
         "title": "Dione: Edit Code"
+      },
+      {
+        "command": "dione.authenticate",
+        "title": "Dione: Authenticate"
+      },
+      {
+        "command": "dione.listPages",
+        "title": "Dione: Pages"
       }
     ]
   },
@@ -25,9 +33,11 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
-    "test": "node ./out/test/runTest.js"
+    "test": "node ./out/test/runTest.js",
+    "server": "node src/index.js"
   },
   "devDependencies": {
+    "@types/express": "^4.17.18",
     "@types/mocha": "^10.0.2",
     "@types/node": "18.x",
     "@types/vscode": "^1.83.0",
@@ -37,9 +47,13 @@
     "eslint": "^8.50.0",
     "glob": "^10.3.3",
     "mocha": "^10.2.0",
+    "tslint": "^6.1.3",
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "monaco-editor": "^0.44.0"
+    "axios": "^1.5.1",
+    "express": "^4.18.2",
+    "monaco-editor": "^0.44.0",
+    "openid-client": "^5.6.0"
   }
 }
