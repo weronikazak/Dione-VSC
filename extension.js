@@ -28,7 +28,7 @@ function activate(context) {
 	});
 
 	context.subscriptions.push(disposable);
-	context.subscriptions.push(vscode.commands.registerCommand('dione.listPages', retrieveConfluencePages, context));
+	context.subscriptions.push(vscode.commands.registerCommand('dione.listPages', () => {retrieveConfluencePages(context)}));
 }
 
 function deactivate() {}

@@ -1,14 +1,21 @@
 const vscode = require("vscode");
 const axios = require("axios");
 
-const retrieveConfluencePages = async function retrieveConfluencePages() {
+const retrieveConfluencePages = async function retrieveConfluencePages(context) {
   try {
-    const accessToken = await vscode.window.showInputBox({
-      placeHolder: "Access Token",
-      prompt: "Paste your Access Token",
-    });
+    var accessToken = undefined;
 
-    console.log("accessToken " + accessToken);
+    if (!context.globalState.get('ATLASSIAN_ACCESS_TOKEN')) {
+        accessToken = await vscode.window.showInputBox({
+        placeHolder: "Access Token",
+        prompt: "Paste your Access Token",
+        });
+        context.globalState.update('ATLASSIAN_ACCESS_TOKEN', accessToken);
+    } else {
+        accessToken = context.globalState.get('ATLASSIAN_ACCESS_TOKEN');
+    }
+
+    // console.log("accessToken " + accessToken);
 
     if (!accessToken) {
       vscode.window.showErrorMessage("Access token not found. Please log in.");
@@ -45,7 +52,7 @@ const retrieveConfluencePages = async function retrieveConfluencePages() {
       }
     );
 
-    console.log("responseContent " + JSON.stringify(responseContent.data));
+    // console.log("responseContent " + JSON.stringify(responseContent.data));
     const resultsId = responseContent.data.results[0].id;
 
     console.log("resultsId " + resultsId);
@@ -60,19 +67,30 @@ const retrieveConfluencePages = async function retrieveConfluencePages() {
         }
       );
 
-    console.log("contentRes " + JSON.stringify(contentRes.data));
-    const panel = vscode.window.createWebviewPanel(
-        'webPanelId', // Unique ID for your panel
-        'Web Panel Title', // Title displayed in the UI
-        vscode.ViewColumn.Beside, // Open in the side panel
-        {
-            enableScripts: true, // Enable JavaScript in the webview
-        }
-    );
+    // console.log("contentRes " + JSON.stringify(contentRes.data));
+    // const panel = vscode.window.createWebviewPanel(
+    //     'webPanelId', // Unique ID for your panel
+    //     'Page Title', // Title displayed in the UI
+    //     vscode.ViewColumn.Beside, // Open in the side panel
+    //     {
+    //         enableScripts: true, // Enable JavaScript in the webview
+    //     }
+    // );
+    
+    // panel.webview.html = contentRes.data.body.storage.value;
 
-    // Load your HTML content into the webview
-    panel.webview.html = contentRes.data.body.storage.value;
-    // Process and display the retrieved Confluence pages
+    const content = contentRes.data.body.storage.value;
+
+    vscode.workspace.openTextDocument({ language: 'markdown' }).then((document) => {
+        const edit = new vscode.WorkspaceEdit();
+        edit.insert(document.uri, new vscode.Position(0, 0), content);
+
+        // Apply the edit and show the document in a webview panel on the right side
+        vscode.workspace.applyEdit(edit).then(() => {
+            vscode.window.showTextDocument(document, vscode.ViewColumn.Beside);
+        });
+    });
+    
     vscode.window.showInformationMessage(
       `Retrieved ${responseContent.data.length} Confluence pages.`
     );
