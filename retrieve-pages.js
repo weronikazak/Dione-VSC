@@ -1,12 +1,19 @@
 
-import * as vscode from 'vscode';
-import axios from 'axios';
-// import api, { route } from "@forge/api";
+const vscode = require('vscode');
+const axios = require('axios');
+// const ATLASSIAN_ACCESS_TOKEN = require('./global.js');
+// require('dotenv').config();
 
-export async function retrieveConfluencePages() {
+const retrieveConfluencePages = async function retrieveConfluencePages(context) {
     try {
-        const accessToken = process.env.ATLASSIAN_ACCESS_TOKEN;
+        const accessToken = await vscode.window.showInputBox(
+            {
+                placeHolder: 'Access Token',
+                prompt: 'Paste your Access Token',
+        });
 
+        console.log('accessToken ' + accessToken);
+        
         if (!accessToken) {
             vscode.window.showErrorMessage('Access token not found. Please log in.');
             return;
@@ -30,7 +37,9 @@ export async function retrieveConfluencePages() {
         const pages = response.data.pages;
         console.log('pages ' + pages);
         vscode.window.showInformationMessage(`Retrieved ${pages.length} Confluence pages.`);
-    } catch (error: any) {
-        vscode.window.showErrorMessage('Error retrieving Confluence pages: ' + error.message);
+    } catch (error) {
+        vscode.window.showErrorMessage('Error retrieving Confluence pages: ' + error);
     }
 };
+
+module.exports = retrieveConfluencePages;
