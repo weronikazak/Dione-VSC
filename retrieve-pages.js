@@ -45,7 +45,22 @@ const retrieveConfluencePages = async function retrieveConfluencePages() {
       }
     );
 
-    console.log("responseContent " + responseContent.data);
+    console.log("responseContent " + JSON.stringify(responseContent.data));
+    const resultsId = responseContent.data.results[0].id;
+
+    console.log("resultsId " + resultsId);
+
+    const contentRes = await axios.get(
+        `https://api.atlassian.com/ex/confluence/${cloudId}/rest/api/content/${resultsId}?expand=body.storage`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: "application/json",
+          },
+        }
+      );
+
+    console.log("contentRes " + JSON.stringify(contentRes.data));
 
     // Process and display the retrieved Confluence pages
     vscode.window.showInformationMessage(
