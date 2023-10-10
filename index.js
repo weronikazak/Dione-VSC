@@ -1,8 +1,5 @@
 const express = require( "express" );
 const axios = require( "axios" );
-// const vscode = require('vscode');
-// var ATLASSIAN_ACCESS_TOKEN = require('./global.js');
-// require('dotenv').config();
 
 const app = express();
 const port = 8000;
@@ -10,7 +7,6 @@ const port = 8000;
 const atlassianClientId = "ORuHfUtA7BUvMeNwMNz1hYQX0s8ZPh8w";
 const atlassianClientSecret = "ATOA8F6OJyEA16Tci7Z7v79VmXTW2lF9PxKx5OntjTR-V-5FMdQeylyHaFoahXiDRmvmA9E150CA";
 const atlassianRedirectUri = "http://localhost:8000/callback/";
-
 
 app.get('/callback', async (req, res) => {
 const { code } = req.query;
@@ -29,10 +25,11 @@ try {
     });
 
     const accessToken = tokenResponse.data.access_token;
+    console.log('tokenResponse ' + tokenResponse.data.expires_in);
 
-    // vscode.ExtensionContext.globalState.update('ATLASSIAN_ACCESS_TOKEN', accessToken);
+    
 
-    res.send(`Login successful. Your access token is:</br>${accessToken}. </b>Copy it and close this window.`);
+    res.send(`Login successful. </b> Your access token: </b>${accessToken}`);
 } catch (error) {
     res.status(500).send('Error logging in: ' + error);
 }
