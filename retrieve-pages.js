@@ -61,10 +61,20 @@ const retrieveConfluencePages = async function retrieveConfluencePages() {
       );
 
     console.log("contentRes " + JSON.stringify(contentRes.data));
+    const panel = vscode.window.createWebviewPanel(
+        'webPanelId', // Unique ID for your panel
+        'Web Panel Title', // Title displayed in the UI
+        vscode.ViewColumn.Beside, // Open in the side panel
+        {
+            enableScripts: true, // Enable JavaScript in the webview
+        }
+    );
 
+    // Load your HTML content into the webview
+    panel.webview.html = contentRes.data.body.storage.value;
     // Process and display the retrieved Confluence pages
     vscode.window.showInformationMessage(
-      `Retrieved ${responseContent.length} Confluence pages.`
+      `Retrieved ${responseContent.data.length} Confluence pages.`
     );
   } catch (error) {
     vscode.window.showErrorMessage(
