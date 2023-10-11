@@ -16,14 +16,13 @@ const retrieveConfluencePages = async function retrieveConfluencePages(context) 
         accessToken = context.globalState.get('ATLASSIAN_ACCESS_TOKEN');
     }
 
-    console.log("accessToken " + accessToken);
-
     if (!accessToken) {
       vscode.window.showErrorMessage("Access token not found. Please log in.");
       return;
     }
 
     var cloudResponse = undefined;
+
     try {
       cloudResponse = await axios.get(
         "https://api.atlassian.com/oauth/token/accessible-resources",
@@ -39,22 +38,28 @@ const retrieveConfluencePages = async function retrieveConfluencePages(context) 
         context.globalState.update('ATLASSIAN_ACCESS_TOKEN', undefined);
         return;
     }
-    
 
-    console.log("cloudResponse " + JSON.stringify(cloudResponse.data));
-
-    let pagesTitles = "</br></br>";
+    // create a dictionary where the page's title is the key and the page's id is the value
+    let domains = {};
     cloudResponse.data.forEach((element) => {
-      pagesTitles += element.name + "</br>";
-      console.log("element " + element.id);
+      domains[element.name] = element.id;
     });
-    console.log("=============================");
 
-    const cloudId = cloudResponse.data[0].id;
-    // vscode.ExtensionContext.globalState.update('ATLASSIAN_ACCESS_TOKEN', accessToken);
+    const options = Object.keys(domains);
+
+    const selectedOption = await vscode.window.showQuickPick(options, {
+      placeHolder: 'Select a domain',
+    });
+
+    var cloudId = undefined;
+    if (selectedOption) {
+      cloudId = domains[selectedOption];
+    } else {
+      return;
+    }
 
     const responseContent = await axios.get(
-      `https://api.atlassian.com/ex/confluence/${cloudId}/rest/api/content?limit=2`,
+      `https://api.atlassian.com/ex/confluence/${cloudId}/rest/api/content`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -63,10 +68,23 @@ const retrieveConfluencePages = async function retrieveConfluencePages(context) 
       }
     );
 
-    // console.log("responseContent " + JSON.stringify(responseContent.data));
-    const resultsId = responseContent.data.results[0].id;
+    let pages = {};
+    responseContent.data.results.forEach((element) => {
+      pages[element.title] = element.id;
+    });
 
-    console.log("resultsId " + resultsId);
+    const selectedPage = await vscode.window.showQuickPick(Object.keys(pages), {
+      placeHolder: 'Select a page',
+    });
+
+    var resultsId = undefined;
+
+    if (selectedPage) {
+      resultsId = pages[selectedPage];
+      vscode.window.showInformationMessage(`Loading page "${selectedPage}"...`);
+    } else {
+      return;
+    }
 
     const contentRes = await axios.get(
         `https://api.atlassian.com/ex/confluence/${cloudId}/rest/api/content/${resultsId}?expand=body.storage`,
