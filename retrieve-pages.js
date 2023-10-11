@@ -1,5 +1,6 @@
 const vscode = require("vscode");
 const axios = require("axios");
+const TurndownService = require('turndown');
 
 const retrieveConfluencePages = async function retrieveConfluencePages(context) {
   try {
@@ -77,23 +78,16 @@ const retrieveConfluencePages = async function retrieveConfluencePages(context) 
         }
       );
 
-    // console.log("contentRes " + JSON.stringify(contentRes.data));
-    // const panel = vscode.window.createWebviewPanel(
-    //     'webPanelId', // Unique ID for your panel
-    //     'Page Title', // Title displayed in the UI
-    //     vscode.ViewColumn.Beside, // Open in the side panel
-    //     {
-    //         enableScripts: true, // Enable JavaScript in the webview
-    //     }
-    // );
-    
-    // panel.webview.html = contentRes.data.body.storage.value;
+    const HTMLcontent = contentRes.data.body.storage.value;
 
-    const content = contentRes.data.body.storage.value;
+    const turndownService = new TurndownService();
+
+    // Convert HTML to Markdown
+    const markdownContent = turndownService.turndown(HTMLcontent);
 
     vscode.workspace.openTextDocument({ language: 'markdown' }).then((document) => {
         const edit = new vscode.WorkspaceEdit();
-        edit.insert(document.uri, new vscode.Position(0, 0), content);
+        edit.insert(document.uri, new vscode.Position(0, 0), markdownContent);
 
         // Apply the edit and show the document in a webview panel on the right side
         vscode.workspace.applyEdit(edit).then(() => {
