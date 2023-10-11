@@ -15,22 +15,32 @@ const retrieveConfluencePages = async function retrieveConfluencePages(context) 
         accessToken = context.globalState.get('ATLASSIAN_ACCESS_TOKEN');
     }
 
-    // console.log("accessToken " + accessToken);
+    console.log("accessToken " + accessToken);
 
     if (!accessToken) {
       vscode.window.showErrorMessage("Access token not found. Please log in.");
       return;
     }
 
-    const cloudResponse = await axios.get(
-      "https://api.atlassian.com/oauth/token/accessible-resources",
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          Accept: "application/json",
-        },
-      }
-    );
+    var cloudResponse = undefined;
+    try {
+      cloudResponse = await axios.get(
+        "https://api.atlassian.com/oauth/token/accessible-resources",
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            Accept: "application/json",
+          },
+        }
+      );
+    } catch (error) {
+        vscode.window.showErrorMessage("There's a problem with your token. Please login again.");
+        context.globalState.update('ATLASSIAN_ACCESS_TOKEN', undefined);
+        return;
+    }
+    
+
+    console.log("cloudResponse " + JSON.stringify(cloudResponse.data));
 
     let pagesTitles = "</br></br>";
     cloudResponse.data.forEach((element) => {
