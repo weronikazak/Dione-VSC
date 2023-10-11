@@ -24,8 +24,21 @@
       {
         "command": "dione.listPages",
         "title": "Dione: List Pages"
+      },
+      {
+        "command": "dione.copyAndDocument",
+        "title": "Dione: Codify"
       }
-    ]
+    ],
+    "menus": {
+      "editor/context": [
+          {
+            "command": "dione.copyAndDocument",
+            "group": "navigation",
+            "when": "editorFocus"
+          }
+      ]
+  }
   },
   "scripts": {
     "lint": "eslint .",
