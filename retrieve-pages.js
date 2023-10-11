@@ -1,6 +1,8 @@
 const vscode = require("vscode");
 const axios = require("axios");
 const TurndownService = require('turndown');
+const fs = require('fs');
+const path = require('path');
 
 const retrieveConfluencePages = async function retrieveConfluencePages(context) {
   try {
@@ -103,19 +105,19 @@ const retrieveConfluencePages = async function retrieveConfluencePages(context) 
     // Convert HTML to Markdown
     const markdownContent = turndownService.turndown(HTMLcontent);
 
-    vscode.workspace.openTextDocument({ language: 'markdown' }).then((document) => {
+    const newFileUri = path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, "Confluence: " + selectedPage + ".md");
+            
+    fs.writeFileSync(newFileUri, markdownContent);
+    vscode.workspace.openTextDocument(newFileUri).then((document) => {
         const edit = new vscode.WorkspaceEdit();
-        edit.insert(document.uri, new vscode.Position(0, 0), markdownContent);
 
-        // Apply the edit and show the document in a webview panel on the right side
         vscode.workspace.applyEdit(edit).then(() => {
             vscode.window.showTextDocument(document, vscode.ViewColumn.Beside);
         });
+        
     });
-    
-    vscode.window.showInformationMessage(
-      `Retrieved ${responseContent.data.length} Confluence pages.`
-    );
+
+
   } catch (error) {
     vscode.window.showErrorMessage(
       "Error retrieving Confluence pages: " + error

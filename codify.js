@@ -6,20 +6,37 @@ function codify() {
     const editor = vscode.window.activeTextEditor;
 
     if (editor) {
-        const selection = `
+        const selection = editor.document.getText(editor.selection);
+        const snippet = `
 <code>
-${editor.document.getText(editor.selection)}
+${selection}
 </code>`;
-        
-        if (editor.document.getText(editor.selection)) {
+
+        if (selection.trim()) {
             // You can customize the file path and name here
-            const newFileName = 'selectedText.md';
-            const newFilePath = path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, newFileName);
+            const baseFileName  = 'Confluence: New Document.md';
+            const baseFilePath = path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, baseFileName);
             
-            fs.writeFileSync(newFilePath, selection);
-            vscode.workspace.openTextDocument(newFilePath).then(doc => {
-                vscode.window.showTextDocument(doc);
-            });
+            const openDocuments = vscode.workspace.textDocuments;
+            const existingFile = openDocuments.find(doc => doc.fileName.includes("Confluence: "));
+            
+            if (existingFile) {
+                // File is already open, append the selection
+                vscode.workspace.openTextDocument(existingFile.uri).then(doc => {
+                    const edit = new vscode.WorkspaceEdit();
+                    edit.insert(doc.uri, new vscode.Position(existingFile.lineCount, 0), snippet);
+                    vscode.workspace.applyEdit(edit).then(() => {
+                        vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside);
+                    });
+                });
+
+            } else {
+                // File doesn't exist or is not open, create a new one
+                fs.writeFileSync(baseFilePath, snippet);
+                vscode.workspace.openTextDocument(baseFilePath).then(doc => {
+                    vscode.window.showTextDocument(doc, vscode.ViewColumn.Beside);
+                });
+            }
         }
     }
 };
