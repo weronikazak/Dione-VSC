@@ -1,11 +1,12 @@
 const express = require( "express" );
 const axios = require( "axios" );
+require('dotenv').config();
 
 const app = express();
 const port = 8000;
 
-const atlassianClientId = "ORuHfUtA7BUvMeNwMNz1hYQX0s8ZPh8w";
-const atlassianClientSecret = "ATOA8F6OJyEA16Tci7Z7v79VmXTW2lF9PxKx5OntjTR-V-5FMdQeylyHaFoahXiDRmvmA9E150CA";
+const atlassianClientId = process.env.ATLASSIAN_CLIENT_ID;
+const atlassianClientSecret = process.env.ATLASSIAN_CLIENT_SECRET;
 const atlassianRedirectUri = "http://localhost:8000/callback/";
 
 app.get('/callback', async (req, res) => {

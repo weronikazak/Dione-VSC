@@ -32,13 +32,13 @@
     ],
     "menus": {
       "editor/context": [
-          {
-            "command": "dione.codify",
-            "group": "navigation",
-            "when": "editorFocus"
-          }
+        {
+          "command": "dione.codify",
+          "group": "navigation",
+          "when": "editorFocus"
+        }
       ]
-  }
+    }
   },
   "scripts": {
     "lint": "eslint .",
@@ -60,6 +60,7 @@
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "node-fetch": "^3.3.2",
+    "openai": "^4.12.0",
     "turndown": "^7.1.2"
   }
 }

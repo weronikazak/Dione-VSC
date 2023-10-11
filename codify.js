@@ -2,6 +2,7 @@ const vscode = require('vscode');
 const fs = require('fs');
 const path = require('path');
 
+
 function codify() {
     const editor = vscode.window.activeTextEditor;
 
@@ -13,7 +14,6 @@ ${selection}
 </code>`;
 
         if (selection.trim()) {
-            // You can customize the file path and name here
             const baseFileName  = 'Confluence: New Document.md';
             const baseFilePath = path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, baseFileName);
             
