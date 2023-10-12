@@ -9,7 +9,7 @@ const codify = require('./codify');
 
 function activate(context) {
 
-    context.subscriptions.push(vscode.commands.registerCommand('dione.codify', codify));
+    context.subscriptions.push(vscode.commands.registerCommand('dione.codify', async() => {await codify()}));
 	context.subscriptions.push(vscode.commands.registerCommand('dione.authenticate', authenticate));
 	context.subscriptions.push(vscode.commands.registerCommand('dione.listPages', () => {retrieveConfluencePages(context)}));
 }

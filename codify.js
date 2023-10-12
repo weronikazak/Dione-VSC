@@ -1,19 +1,26 @@
 const vscode = require('vscode');
 const fs = require('fs');
 const path = require('path');
+const commentCode = require('./comment-code');
+require('dotenv').config();
 
-
-function codify() {
+async function codify() {
     const editor = vscode.window.activeTextEditor;
 
     if (editor) {
         const selection = editor.document.getText(editor.selection);
-        const snippet = `
-<code>
-${selection}
-</code>`;
+        
 
         if (selection.trim()) {
+            const codeExplanation = await commentCode(selection);
+            const snippet = `
+
+<code>
+${selection}
+</code>
+
+${codeExplanation}`;
+
             const baseFileName  = 'Confluence: New Document.md';
             const baseFilePath = path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, baseFileName);
             
