@@ -57,7 +57,7 @@ async function useExistingPage() {
     vscode.workspace.workspaceFolders[0].uri.fsPath,
     selectedFile
   );
-  pasteTheCode(filePath);
+  await pasteTheCode(filePath);
 }
 
 async function reusePage(context) {
@@ -72,7 +72,7 @@ async function reusePage(context) {
     vscode.workspace.workspaceFolders[0].uri.fsPath,
     selectedPage + ".md"
   );
-  pasteTheCode(filePath);
+  await pasteTheCode(filePath);
 }
 
 async function createNewPage() {
@@ -91,14 +91,14 @@ async function createNewPage() {
     editorName + ".md"
   );
 
-  pasteTheCode(filePath);
+  await pasteTheCode(filePath);
 }
 
-function pasteTheCode(filePath) {
+async function pasteTheCode(filePath) {
   const editor = vscode.window.activeTextEditor;
   if (editor) {
     const selection = editor.document.getText(editor.selection);
-    const commentedCode = commentCode(selection);
+    const commentedCode = await commentCode(selection);
     const snippet = `
 <code>
 ${selection}
