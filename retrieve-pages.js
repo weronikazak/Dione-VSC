@@ -10,8 +10,8 @@ const retrieveConfluencePages = async function retrieveConfluencePages(context) 
 
     if (!context.globalState.get('ATLASSIAN_ACCESS_TOKEN')) {
         accessToken = await vscode.window.showInputBox({
-        placeHolder: "Access Token",
-        prompt: "Paste your Access Token",
+          placeHolder: "Access Token",
+          prompt: "Paste your Access Token",
         });
         context.globalState.update('ATLASSIAN_ACCESS_TOKEN', accessToken);
     } else {
@@ -105,7 +105,7 @@ const retrieveConfluencePages = async function retrieveConfluencePages(context) 
     // Convert HTML to Markdown
     const markdownContent = turndownService.turndown(HTMLcontent);
 
-    const newFileUri = path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, "Confluence: " + selectedPage + ".md");
+    const newFileUri = path.join(vscode.workspace.workspaceFolders[0].uri.fsPath, selectedPage + ".md");
             
     fs.writeFileSync(newFileUri, markdownContent);
     vscode.workspace.openTextDocument(newFileUri).then((document) => {
@@ -117,6 +117,7 @@ const retrieveConfluencePages = async function retrieveConfluencePages(context) 
         
     });
 
+    return {pageTitle: selectedPage, cloudId: cloudId};
 
   } catch (error) {
     vscode.window.showErrorMessage(
