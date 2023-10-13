@@ -1,11 +1,12 @@
 const vscode = require('vscode');
 const OpenAI = require('openai');
+const OPENAI_API_KEY = require('./globals');
 
 async function commentCode(code) {
 
     try {
         const openai = new OpenAI({
-            apiKey: "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",
+            apiKey: OPENAI_API_KEY,
         });
 
         const commentedCode = await openai.chat.completions.create({
