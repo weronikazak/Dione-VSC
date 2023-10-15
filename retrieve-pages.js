@@ -47,6 +47,8 @@ const retrieveConfluencePages = async function retrieveConfluencePages(context) 
       domains[element.name] = element.id;
     });
 
+    context.workspaceState.update('domains_details', domains);
+
     const options = Object.keys(domains);
 
     const selectedOption = await vscode.window.showQuickPick(options, {
@@ -74,6 +76,8 @@ const retrieveConfluencePages = async function retrieveConfluencePages(context) 
     responseContent.data.results.forEach((element) => {
       pages[element.title] = element.id;
     });
+
+    context.workspaceState.update('pages_details', pages);
 
     const selectedPage = await vscode.window.showQuickPick(Object.keys(pages), {
       placeHolder: 'Select a page',
