@@ -11,7 +11,7 @@ const updateOrCreatePage = require('./push-pages');
 function activate(context) {
 
     context.subscriptions.push(vscode.commands.registerCommand('dione.codify', async() => {await codify(context)}));
-	context.subscriptions.push(vscode.commands.registerCommand('dione.authenticate', authenticate));
+	context.subscriptions.push(vscode.commands.registerCommand('dione.authenticate', () => {authenticate(context)}));
 	context.subscriptions.push(vscode.commands.registerCommand('dione.listPages', () => {retrieveConfluencePages(context)}));
 	context.subscriptions.push(vscode.commands.registerCommand('dione.pushPages', () => {updateOrCreatePage(context)}));
 }

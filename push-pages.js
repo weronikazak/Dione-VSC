@@ -1,10 +1,11 @@
 const vscode = require("vscode");
 const axios = require("axios");
+const {API_TOKEN, EMAIL} = require("./globals");
 
 const updateOrCreatePage = async function retrieveConfluencePages(context) {
   try {
     var accessToken = undefined;
-
+    
     if (!context.globalState.get("ATLASSIAN_ACCESS_TOKEN")) {
       accessToken = await vscode.window.showInputBox({
         placeHolder: "Access Token",
@@ -44,30 +45,39 @@ const updateOrCreatePage = async function retrieveConfluencePages(context) {
     if (!selectedPage) {
       return;
     }
+
+    // choose domains to push to
+    const domains = context.workspaceState.get("domains_details");
+    console.log('domains ' + JSON.stringify(domains));
+    if (!domains) {
+      vscode.window.showErrorMessage(
+        "No domains found. Please retrieve domains first."
+      );
+      return;
+    } 
+    // Show a quick pick menu with all the domains
+    const selectedDomain = await vscode.window.showQuickPick(
+      Object.keys(domains),
+      {
+        placeHolder: "Select a domain to push to",
+      }
+    );
+    console.log('selectedDomain ' + selectedDomain);
+    if (!selectedDomain) {
+      return;
+    }
+  
+
     // Check if selected page exists in the pagesDetails dictionary
     if (!pagesDetails[selectedPage]) {
       // Create a new page
-      const document = vscode.window.activeTextEditor.document.getText();
-      const bodyData = `{
-        "type": "page",
-        "title": ${selectedPage},
-        "space": {
-          "key": "TEST"
-        },
-        "body": {
-          "storage": {
-            "value": ${document},
-            "representation": "storage"
-          }
-        }
-      }`;
-      // send the request to create the page with axios
+      await createNewPage(selectedDomain, pagesDetails, selectedPage);
       
     } else {
       // Update a page
       console.log('selectedPage ' + selectedPage + ' ' + pagesDetails[selectedPage]);
 
-      await updateExistingPage(pagesDetails, selectedPage, accessToken);
+      // await updateExistingPage(pagesDetails, selectedPage, accessToken);
     }
   } catch (error) {
     vscode.window.showErrorMessage(
@@ -76,43 +86,48 @@ const updateOrCreatePage = async function retrieveConfluencePages(context) {
   }
 };
 
+
+async function createNewPage(domain, pagesDetails, selectedPage) {
+  // get data from the editor of name selectedPage
+  const document = vscode.window.activeTextEditor.document.getText();
+
+  // Retrieve spaces
+  const responseContent = await axios.get(
+    `https://${domain}.atlassian.net/wiki/api/v2/spaces`,
+    {
+      headers: {
+        Authorization: `Basic ${Buffer.from(
+          `${EMAIL}:${API_TOKEN}`
+        ).toString('base64')}`,
+        Accept: "application/json",
+      },
+    }
+  );
+
+  // create a dict with space name and space id
+  const spaces = {};
+  responseContent.data.results.forEach((space) => {
+    spaces[space.name] = space.id;
+  });
+
+  // show a quick pick menu with all the spaces
+  const selectedSpace = await vscode.window.showQuickPick(
+    Object.keys(spaces),
+    {
+      placeHolder: "Select a space to push to Confluence",
+    }
+  );
+
+  console.log('selectedSpace ' + selectedSpace);
+
+}
+
 async function updateExistingPage(pagesDetails, selectedPage, accessToken) {
   // get data from the editor of name selectedPage
   const document = vscode.window.activeTextEditor.document.getText();
   const cloudId = pagesDetails[selectedPage];
   
-  console.log('updateExistingPagecloudId ' + cloudId);
 
-  const bodyData = `{
-    "id": ${cloudId},
-    "status": "current",
-    "title": ${selectedPage},
-    "body": {
-      "representation": "storage",
-      "value": ${document}
-    },
-    "version": {
-      "number": 47,
-      "message": "Update content via Dione"
-    }
-  }`;
-
-  // update the page
-  const response = await axios.put(
-    `https://api.atlassian.com/ex/confluence/${cloudId}/rest/api/content`,
-    bodyData,
-    {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  if (response.status === 200) {
-    vscode.window.showInformationMessage("Page updated successfully");
-  } else {
-    vscode.window.showErrorMessage("Error updating page");
-  } 
 }
 
 module.exports = updateOrCreatePage;
