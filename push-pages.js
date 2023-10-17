@@ -1,6 +1,7 @@
 const vscode = require("vscode");
 const axios = require("axios");
 const {API_TOKEN, EMAIL} = require("./globals");
+const { exec } = require("child_process");
 
 const updateOrCreatePage = async function retrieveConfluencePages(context) {
   try {
@@ -87,7 +88,7 @@ const updateOrCreatePage = async function retrieveConfluencePages(context) {
 };
 
 
-async function createNewPage(domain, pagesDetails, selectedPage) {
+async function createNewPage(domain, pagesDetails, pageTitle) {
   // get data from the editor of name selectedPage
   const document = vscode.window.activeTextEditor.document.getText();
 
@@ -104,6 +105,13 @@ async function createNewPage(domain, pagesDetails, selectedPage) {
     }
   );
 
+  if (!responseContent.data.results) {
+    vscode.window.showErrorMessage(
+      "No spaces found. Please create a space first."
+    );
+    return;
+  }
+
   // create a dict with space name and space id
   const spaces = {};
   responseContent.data.results.forEach((space) => {
@@ -119,6 +127,71 @@ async function createNewPage(domain, pagesDetails, selectedPage) {
   );
 
   console.log('selectedSpace ' + selectedSpace);
+
+  if (!selectedSpace) {
+    return;
+  }
+  
+  const bodyData = {
+    spaceId: spaces[selectedSpace],
+    status: 'current',
+    title: pageTitle,
+    body: {
+      representation: 'storage',
+      value: 'some value oh my god',
+    },
+  };
+
+  const config = {
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    auth: {
+      username: EMAIL,
+      password: API_TOKEN
+    },
+  };
+
+  console.log('bodyData ' + bodyData);
+
+  // const response = await axios.post(
+  //   `https://${domain}.atlassian.net/wiki/api/v2/pages`,
+  //   bodyData, config
+
+  // );
+
+  // console.log('response ' + JSON.stringify(response));
+  // if (response.status !== 200) {
+  //   vscode.window.showErrorMessage(
+  //     "Error creating page: " + response.data.message
+  //   );
+  //   return;
+  // } else {
+  //   vscode.window.showInformationMessage(
+  //     "Page created successfully!"
+  //   );
+  // }
+
+  const curlCommand = `
+  curl --request POST \
+  --url 'https://${domain}.atlassian.net/wiki/api/v2/pages' \
+  --user '${EMAIL}:${API_TOKEN}' \
+  --header 'Accept: application/json' \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "spaceId": "${selectedSpace}",
+    "status": "current",
+    "title": "${pageTitle}",
+    "body": {
+      "representation": "storage",
+      "value": "whatever"
+    }
+  }'
+`;
+
+const res = await exec(curlCommand);
+console.log('res ' + JSON.stringify(res));
 
 }
 
