@@ -1,12 +1,12 @@
 const vscode = require("vscode");
 const axios = require("axios");
-const {API_TOKEN, EMAIL} = require("./globals");
+const { API_TOKEN, EMAIL } = require("./globals");
 const { exec } = require("child_process");
 
 const updateOrCreatePage = async function retrieveConfluencePages(context) {
   try {
     var accessToken = undefined;
-    
+
     if (!context.globalState.get("ATLASSIAN_ACCESS_TOKEN")) {
       accessToken = await vscode.window.showInputBox({
         placeHolder: "Access Token",
@@ -34,7 +34,7 @@ const updateOrCreatePage = async function retrieveConfluencePages(context) {
     );
 
     const pagesDetails = context.workspaceState.get("pages_details");
-    console.log('pagesDetails ' + JSON.stringify(pagesDetails));
+    console.log("pagesDetails " + JSON.stringify(pagesDetails));
 
     if (!pagesDetails) {
       vscode.window.showErrorMessage(
@@ -42,20 +42,20 @@ const updateOrCreatePage = async function retrieveConfluencePages(context) {
       );
       return;
     }
-    console.log('selectedPage ' + selectedPage);
+    console.log("selectedPage " + selectedPage);
     if (!selectedPage) {
       return;
     }
 
     // choose domains to push to
     const domains = context.workspaceState.get("domains_details");
-    console.log('domains ' + JSON.stringify(domains));
+    console.log("domains " + JSON.stringify(domains));
     if (!domains) {
       vscode.window.showErrorMessage(
         "No domains found. Please retrieve domains first."
       );
       return;
-    } 
+    }
     // Show a quick pick menu with all the domains
     const selectedDomain = await vscode.window.showQuickPick(
       Object.keys(domains),
@@ -63,20 +63,20 @@ const updateOrCreatePage = async function retrieveConfluencePages(context) {
         placeHolder: "Select a domain to push to",
       }
     );
-    console.log('selectedDomain ' + selectedDomain);
+    console.log("selectedDomain " + selectedDomain);
     if (!selectedDomain) {
       return;
     }
-  
 
     // Check if selected page exists in the pagesDetails dictionary
     if (!pagesDetails[selectedPage]) {
       // Create a new page
       await createNewPage(selectedDomain, pagesDetails, selectedPage);
-      
     } else {
       // Update a page
-      console.log('selectedPage ' + selectedPage + ' ' + pagesDetails[selectedPage]);
+      console.log(
+        "selectedPage " + selectedPage + " " + pagesDetails[selectedPage]
+      );
 
       // await updateExistingPage(pagesDetails, selectedPage, accessToken);
     }
@@ -87,7 +87,6 @@ const updateOrCreatePage = async function retrieveConfluencePages(context) {
   }
 };
 
-
 async function createNewPage(domain, pagesDetails, pageTitle) {
   // get data from the editor of name selectedPage
   const document = vscode.window.activeTextEditor.document.getText();
@@ -97,9 +96,9 @@ async function createNewPage(domain, pagesDetails, pageTitle) {
     `https://${domain}.atlassian.net/wiki/api/v2/spaces`,
     {
       headers: {
-        Authorization: `Basic ${Buffer.from(
-          `${EMAIL}:${API_TOKEN}`
-        ).toString('base64')}`,
+        Authorization: `Basic ${Buffer.from(`${EMAIL}:${API_TOKEN}`).toString(
+          "base64"
+        )}`,
         Accept: "application/json",
       },
     }
@@ -119,59 +118,15 @@ async function createNewPage(domain, pagesDetails, pageTitle) {
   });
 
   // show a quick pick menu with all the spaces
-  const selectedSpace = await vscode.window.showQuickPick(
-    Object.keys(spaces),
-    {
-      placeHolder: "Select a space to push to Confluence",
-    }
-  );
+  const selectedSpace = await vscode.window.showQuickPick(Object.keys(spaces), {
+    placeHolder: "Select a space to push to Confluence",
+  });
 
-  console.log('selectedSpace ' + selectedSpace);
+  console.log("selectedSpace " + selectedSpace);
 
   if (!selectedSpace) {
     return;
   }
-  
-  const bodyData = {
-    spaceId: spaces[selectedSpace],
-    status: 'current',
-    title: pageTitle,
-    body: {
-      representation: 'storage',
-      value: 'some value oh my god',
-    },
-  };
-
-  const config = {
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-    auth: {
-      username: EMAIL,
-      password: API_TOKEN
-    },
-  };
-
-  console.log('bodyData ' + bodyData);
-
-  // const response = await axios.post(
-  //   `https://${domain}.atlassian.net/wiki/api/v2/pages`,
-  //   bodyData, config
-
-  // );
-
-  // console.log('response ' + JSON.stringify(response));
-  // if (response.status !== 200) {
-  //   vscode.window.showErrorMessage(
-  //     "Error creating page: " + response.data.message
-  //   );
-  //   return;
-  // } else {
-  //   vscode.window.showInformationMessage(
-  //     "Page created successfully!"
-  //   );
-  // }
 
   const curlCommand = `
   curl --request POST \
@@ -185,22 +140,24 @@ async function createNewPage(domain, pagesDetails, pageTitle) {
     "title": "${pageTitle}",
     "body": {
       "representation": "storage",
-      "value": "whatever"
+      "value": "${document}"
     }
   }'
 `;
 
-const res = await exec(curlCommand);
-console.log('res ' + JSON.stringify(res));
-
+  const res = await exec(curlCommand);
+  console.log("res " + JSON.stringify(res));
+  if (res) {
+    vscode.window.showInformationMessage("Page created successfully");
+  } else {
+    vscode.window.showErrorMessage("Error creating page");
+  }
 }
 
 async function updateExistingPage(pagesDetails, selectedPage, accessToken) {
   // get data from the editor of name selectedPage
   const document = vscode.window.activeTextEditor.document.getText();
   const cloudId = pagesDetails[selectedPage];
-  
-
 }
 
 module.exports = updateOrCreatePage;

@@ -1,6 +1,6 @@
 const vscode = require('vscode');
 const OpenAI = require('openai');
-const OPENAI_API_KEY = require('./globals');
+const {OPENAI_API_KEY} = require('./globals');
 
 async function commentCode(code) {
 
