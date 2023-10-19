@@ -100,10 +100,10 @@ async function pasteTheCode(filePath) {
     const selection = editor.document.getText(editor.selection);
     const commentedCode = await commentCode(selection);
     const snippet = `
-<code>
+<pre><code>
 ${selection}
-</code>
-${commentedCode}
+</code></pre>
+<p>${commentedCode}</p>
 `;
 
     // check if the file exists and if it doesn't, create it

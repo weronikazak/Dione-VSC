@@ -129,17 +129,18 @@ async function createNewPage(domain, pageTitle) {
     return;
   }
 
+  const body = document.replace(/"/g, "'").replace(/\n/g, '<br/>').replace(/\r/g, "");
+
   const bodyData = `{
     "spaceId": "${spaces[selectedSpace]}",
     "status": "current",
     "title": "${pageTitle}",
     "body": {
       "representation": "storage",
-      "value": "${document.replace(/"/g, "'").replace(/\n/g, "").replace(/\r/g, "").replace(/\\/g, "\\\\")}}"
+      "value": "<html>${body}</html>"
     }
   }`;
 
-  console.log("bodyData " + bodyData);
   
   fetch(`https://${domain}.atlassian.net/wiki/api/v2/pages`, {
     method: 'POST',
@@ -206,20 +207,24 @@ async function updateExistingPage(domain, pagesDetails, pageTitle) {
     return;
   }
 
+  const body = document.replace(/"/g, "'").replace(/\n/g, '<br/>').replace(/\r/g, "");
+
+  console.log("body " + body);
+
   const bodyData = `{
     "id": "${cloudId}",
     "status": "current",
     "title": "${pageTitle}",
     "body": {
       "representation": "storage",
-      "value": "${document.replace(/"/g, "'").replace(/\n/g, "").replace(/\r/g, "").replace(/\\/g, "\\\\")}}"
+      "value": "<html>${body}</html>"
     },
     "version": {
       "number": ${lastVersion+1},
       "message": "Updated via Dione"
     }
   }`;
-  
+
   fetch(`https://${domain}.atlassian.net/wiki/api/v2/pages/${cloudId}`, {
     method: 'PUT',
     headers: {
