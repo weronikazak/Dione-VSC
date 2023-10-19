@@ -1,7 +1,7 @@
 const vscode = require("vscode");
 const axios = require("axios");
 const { API_TOKEN, EMAIL } = require("./globals");
-const { exec } = require("child_process");
+const fetch = require("node-fetch");
 
 const updateOrCreatePage = async function retrieveConfluencePages(context) {
   try {
@@ -128,30 +128,46 @@ async function createNewPage(domain, pagesDetails, pageTitle) {
     return;
   }
 
-  const curlCommand = `
-  curl --request POST \
-  --url 'https://${domain}.atlassian.net/wiki/api/v2/pages' \
-  --user '${EMAIL}:${API_TOKEN}' \
-  --header 'Accept: application/json' \
-  --header 'Content-Type: application/json' \
-  --data '{
-    "spaceId": "${selectedSpace}",
+  const bodyData = `{
+    "spaceId": "${spaces[selectedSpace]}",
     "status": "current",
     "title": "${pageTitle}",
     "body": {
       "representation": "storage",
-      "value": "${document}"
+      "value": "${document.replace(/"/g, "'").replace(/\n/g, "").replace(/\r/g, "")}}"
     }
-  }'
-`;
+  }`;
 
-  const res = await exec(curlCommand);
-  console.log("res " + JSON.stringify(res));
-  if (res) {
-    vscode.window.showInformationMessage("Page created successfully");
-  } else {
-    vscode.window.showErrorMessage("Error creating page");
-  }
+  console.log("bodyData " + bodyData);
+  
+  fetch(`https://${domain}.atlassian.net/wiki/api/v2/pages`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Basic ${Buffer.from(
+        `${EMAIL}:${API_TOKEN}`
+      ).toString('base64')}`,
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: bodyData
+  })
+    .then(response => {
+      console.log(
+        `Response: ${response.status} ${response.statusText}`
+      );
+      if (response.status === 200) {
+        vscode.window.showInformationMessage(
+          "Page created successfully"
+        );
+      } else {
+        vscode.window.showErrorMessage(
+          "Error creating page: " + response.statusText
+        );
+      }
+      return response.text();
+    })
+    .then(text => console.log(text))
+    .catch(err => vscode.window.showErrorMessage(err)); 
 }
 
 async function updateExistingPage(pagesDetails, selectedPage, accessToken) {
