@@ -71,9 +71,10 @@ const updateOrCreatePage = async function retrieveConfluencePages(context) {
     // Check if selected page exists in the pagesDetails dictionary
     if (!pagesDetails[selectedPage]) {
       // Create a new page
-      await createNewPage(selectedDomain, pagesDetails, selectedPage);
+      await createNewPage(selectedDomain, selectedPage);
     } else {
       // Update a page
+      updateExistingPage(selectedDomain, pagesDetails, selectedPage)
       console.log(
         "selectedPage " + selectedPage + " " + pagesDetails[selectedPage]
       );
@@ -87,7 +88,7 @@ const updateOrCreatePage = async function retrieveConfluencePages(context) {
   }
 };
 
-async function createNewPage(domain, pagesDetails, pageTitle) {
+async function createNewPage(domain, pageTitle) {
   // get data from the editor of name selectedPage
   const document = vscode.window.activeTextEditor.document.getText();
 
@@ -134,7 +135,7 @@ async function createNewPage(domain, pagesDetails, pageTitle) {
     "title": "${pageTitle}",
     "body": {
       "representation": "storage",
-      "value": "${document.replace(/"/g, "'").replace(/\n/g, "").replace(/\r/g, "")}}"
+      "value": "${document.replace(/"/g, "'").replace(/\n/g, "").replace(/\r/g, "").replace(/\\/g, "\\\\")}}"
     }
   }`;
 
@@ -170,10 +171,83 @@ async function createNewPage(domain, pagesDetails, pageTitle) {
     .catch(err => vscode.window.showErrorMessage(err)); 
 }
 
-async function updateExistingPage(pagesDetails, selectedPage, accessToken) {
+async function updateExistingPage(domain, pagesDetails, pageTitle) {
   // get data from the editor of name selectedPage
   const document = vscode.window.activeTextEditor.document.getText();
-  const cloudId = pagesDetails[selectedPage];
+  const cloudId = pagesDetails[pageTitle];
+
+  // get last version of the page
+  const responseContent = await axios.get(
+    `https://${domain}.atlassian.net/wiki/api/v2/pages/${cloudId}/versions`,
+    {
+      headers: {
+        Authorization: `Basic ${Buffer.from(`${EMAIL}:${API_TOKEN}`).toString(
+          "base64"
+        )}`,
+        Accept: "application/json",
+      },
+    }
+  );
+
+  if (!responseContent.data.results) {
+    vscode.window.showErrorMessage(
+      "No spaces found. Please create a space first."
+    );
+    return;
+  }
+
+  const lastVersion = responseContent.data.results[0].number;
+  console.log("lastVersion " + lastVersion);
+
+  if (!lastVersion) {
+    vscode.window.showErrorMessage(
+      "Error getting page's last version"
+    );
+    return;
+  }
+
+  const bodyData = `{
+    "id": "${cloudId}",
+    "status": "current",
+    "title": "${pageTitle}",
+    "body": {
+      "representation": "storage",
+      "value": "${document.replace(/"/g, "'").replace(/\n/g, "").replace(/\r/g, "").replace(/\\/g, "\\\\")}}"
+    },
+    "version": {
+      "number": ${lastVersion+1},
+      "message": "Updated via Dione"
+    }
+  }`;
+  
+  fetch(`https://${domain}.atlassian.net/wiki/api/v2/pages/${cloudId}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Basic ${Buffer.from(
+        `${EMAIL}:${API_TOKEN}`
+      ).toString('base64')}`,
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: bodyData
+  })
+    .then(response => {
+    console.log(
+      `Response: ${response.status} ${response.statusText}`
+    );
+    if (response.status === 200) {
+      vscode.window.showInformationMessage(
+        "Page updated successfully"
+      );
+    } else {
+      vscode.window.showErrorMessage(
+        "Error updating page: " + response.statusText
+      );
+    }
+    return response.text();
+  })
+  .then(text => console.log(text))
+  .catch(err => vscode.window.showErrorMessage(err)); 
 }
 
 module.exports = updateOrCreatePage;
