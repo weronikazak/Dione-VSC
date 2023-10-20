@@ -5,9 +5,16 @@ require('dotenv').config();
 const app = express();
 const port = 8000;
 
+app.set("view engine", "ejs");
+app.use(express.static('public'));
+
 const atlassianClientId = process.env.ATLASSIAN_CLIENT_ID;
 const atlassianClientSecret = process.env.ATLASSIAN_CLIENT_SECRET;
 const atlassianRedirectUri = "http://localhost:8000/callback/";
+
+app.get("/", (req, res) => {
+    res.render("index", {accessToken: "Please login again"}); // index refers to index.ejs
+});
 
 app.get('/callback', async (req, res) => {
 const { code } = req.query;
@@ -26,11 +33,10 @@ try {
     });
 
     const accessToken = tokenResponse.data.access_token;
-    console.log('tokenResponse ' + tokenResponse.data.expires_in);
 
-    
+    res.render("index", {accessToken: accessToken});
 
-    res.send(`Login successful. </b> Your access token: </b>${accessToken}`);
+    // res.send(`Login successful. </b> Your access token: </b>${accessToken}`);
 } catch (error) {
     res.status(500).send('Error logging in: ' + error);
 }
