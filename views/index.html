@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&family=Tilt+Neon&display=swap"
+      rel="stylesheet"
+    />
+    <title>Dione</title>
+    <style>
+      html {
+        height: 100%;
+      }
+
+      body {
+        height: 100%;
+        margin: 0;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        /* background: rgb(28,28,28);
+            background: linear-gradient(rgba(28,28,28,1) 0%, rgba(37,150,190,1) 55%, rgba(122,207,199,1) 100%); */
+        background: linear-gradient(60deg, #7acfc7, #2596be, #ffc35b);
+        background-size: 150% 150% !important;
+        animation: gradient-animation 15s ease-in-out infinite alternate both;
+        /* font-family: 'Oswald', sans-serif; */
+        font-family: "Tilt Neon", sans-serif;
+      }
+
+      @keyframes gradient-animation {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      .menu-bar {
+        /* background-color: #1c1c1c; */
+        color: #fff;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .icon {
+        font-size: 24px;
+        margin-right: 10px;
+      }
+
+      .menu-logo {
+        max-width: 40px;
+        margin-right: 10px;
+      }
+
+      .social-icons {
+        display: flex;
+        align-items: center;
+      }
+
+      .social-icon {
+        font-size: 20px;
+        margin-left: 10px;
+        color: #fff;
+        text-decoration: none;
+      }
+
+      .copy-text {
+        position: relative;
+        padding: 10px;
+        background: #fff;
+        border: 2px solid #ddd;
+        border-radius: 10px;
+        display: flex;
+      }
+      .copy-text input.text {
+        padding: 10px;
+        font-size: 18px;
+        color: #555;
+        border: none;
+        outline: none;
+      }
+      .copy-text button {
+        padding: 10px;
+        background: #426c67;
+        color: #fff;
+        font-size: 18px;
+        border: none;
+        outline: none;
+        border-radius: 10px;
+        cursor: pointer;
+      }
+
+      .copy-text button:active {
+        background: #426c67;
+      }
+      .copy-text button:before {
+        content: "Copied";
+        position: absolute;
+        top: -45px;
+        right: 0px;
+        background: #4c847c;
+        padding: 8px 10px;
+        border-radius: 20px;
+        font-size: 15px;
+        display: none;
+      }
+      .copy-text button:after {
+        content: "";
+        position: absolute;
+        top: -20px;
+        right: 25px;
+        width: 10px;
+        height: 10px;
+        background: #4c847c;
+        transform: rotate(45deg);
+        display: none;
+      }
+      .copy-text.active button:before,
+      .copy-text.active button:after {
+        display: block;
+      }
+
+      .brand-icon {
+        margin-top: -10px;
+        margin-right: -5px;
+      }
+      .brand {
+        font-size: 64px;
+        /* text-shadow: -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 2px 2px 0 #000; */
+        -webkit-text-stroke: 1px #1c1c1c;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="menu-bar">
+      <img
+        src=""
+        height="36"
+        class="menu-logo"
+      />
+      <!-- <i class="fas fa-icon-name icon"></i> Dione -->
+      <div class="social-icons">
+        <a href="https://www.linkedin.com/in/weronikawzak/" class="social-icon">
+          <i class="fab fa-linkedin"></i>
+        </a>
+        <a href="https://github.com/weronikazak" class="social-icon">
+          <i class="fab fa-github"></i>
+        </a>
+        <a href="https://weronika.link/" class="social-icon">
+          <i class="fas fa-globe"></i>
+        </a>
+      </div>
+    </div>
+    <div class="container mt-5">
+      <div class="mt-3 text-center">
+        <h1 class="text-white brand">
+            <img src="../assets/images/dione-icon.png" class="brand-icon" height="64">ione</h1>
+        <h2 class="text-white">
+            Visual Studio Code Extension integrated with Confluence to boost your productivity.
+
+        </h2>        
+          <p class="text-white"> Copy the access token below and paste it in the extension.
+        </p>
+        <div class="copy-text">
+          <input
+            type="text"
+            id="accessToken"
+            class="form-control text"
+            value="eyJraWQiOiJmZTM2ZThkMzZjMTA2N2RjYTgyNTg5MmEiLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiI1OWVjODdjMy0wNDA1LTQ1OTEtODI0My03YjU3MmFkMWU0NTYiLCJzdWIiOiI3MTIwMjA6NTdiZTYyZGUtNmJhMi00Y2YxLWIwMjAtNmVhNjY4MzRkZjUzIiwibmJmIjoxNjk3Nzg4Njk4LCJpc3MiOiJodHRwczovL2F1dGguYXRsYXNzaWFuLmNvbSIsImlhdCI6MTY5Nzc4ODY5OCwiZXhwIjoxNjk3NzkyMjk4LCJhdWQiOiJPUnVIZlV0QTdCVXZNZU53TU56MWhZUVgwczhaUGg4dyIsImh0dHBzOi8vYXRsYXNzaWFuLmNvbS9zeXN0ZW1BY2NvdW50RW1haWwiOiI2ZmU0YTUyZS03NWQ2LTQ4ZTAtODczNy1iN2M3Yzc3NzkxMzZAY29ubmVjdC5hdGxhc3NpYW4uY29tIiwiaHR0cHM6Ly9pZC5hdGxhc3NpYW4uY29tL3VqdCI6IjdhMzZhMDIyLTEwNmUtNGViOS1hNGM5LTI0ZGJkNzczMWI4NiIsInNjb3BlIjoid3JpdGU6Y29uZmx1ZW5jZS1ncm91cHMgcmVhZG9ubHk6Y29udGVudC5hdHRhY2htZW50OmNvbmZsdWVuY2Ugd3JpdGU6Y29uZmx1ZW5jZS1zcGFjZSByZWFkOmNvbmZsdWVuY2UtY29udGVudC5wZXJtaXNzaW9uIHJlYWQ6Y29uZmx1ZW5jZS1wcm9wcyB3cml0ZTpjb25mbHVlbmNlLWNvbnRlbnQgbWFuYWdlOmNvbmZsdWVuY2UtY29uZmlndXJhdGlvbiByZWFkOmNvbmZsdWVuY2UtZ3JvdXBzIHJlYWQ6Y29uZmx1ZW5jZS1jb250ZW50LnN1bW1hcnkgcmVhZDpjb25mbHVlbmNlLXVzZXIgc2VhcmNoOmNvbmZsdWVuY2UgcmVhZDpjb25mbHVlbmNlLXNwYWNlLnN1bW1hcnkgd3JpdGU6Y29uZmx1ZW5jZS1wcm9wcyByZWFkOmNvbmZsdWVuY2UtY29udGVudC5hbGwgd3JpdGU6Y29uZmx1ZW5jZS1maWxlIiwiaHR0cHM6Ly9pZC5hdGxhc3NpYW4uY29tL2F0bF90b2tlbl90eXBlIjoiQUNDRVNTIiwiaHR0cHM6Ly9hdGxhc3NpYW4uY29tL2ZpcnN0UGFydHkiOmZhbHNlLCJodHRwczovL2F0bGFzc2lhbi5jb20vdmVyaWZpZWQiOnRydWUsImh0dHBzOi8vYXRsYXNzaWFuLmNvbS9vYXV0aENsaWVudElkIjoiT1J1SGZVdEE3QlV2TWVOd01OejFoWVFYMHM4WlBoOHciLCJodHRwczovL2lkLmF0bGFzc2lhbi5jb20vcHJvY2Vzc1JlZ2lvbiI6InVzLWVhc3QtMSIsImh0dHBzOi8vYXRsYXNzaWFuLmNvbS9lbWFpbERvbWFpbiI6ImdtYWlsLmNvbSIsImh0dHBzOi8vYXRsYXNzaWFuLmNvbS9zeXN0ZW1BY2NvdW50SWQiOiI3MTIwMjA6M2M3ZDQ5ZjItZDU0Yy00ZDZkLTlhM2UtZDM5Y2M1MDNhNGVhIiwiaHR0cHM6Ly9hdGxhc3NpYW4uY29tLzNsbyI6dHJ1ZSwiY2xpZW50X2lkIjoiT1J1SGZVdEE3QlV2TWVOd01OejFoWVFYMHM4WlBoOHciLCJodHRwczovL2lkLmF0bGFzc2lhbi5jb20vc2Vzc2lvbl9pZCI6ImE1OGI5Y2NlLWQ5NzktNDQ5Yy05MDdhLTQ1NWYwOGE5Mzc2ZiIsImh0dHBzOi8vaWQuYXRsYXNzaWFuLmNvbS92ZXJpZmllZCI6dHJ1ZSwiaHR0cHM6Ly9hdGxhc3NpYW4uY29tL3N5c3RlbUFjY291bnRFbWFpbERvbWFpbiI6ImNvbm5lY3QuYXRsYXNzaWFuLmNvbSJ9.fdBJbFd5B8aOUGrCyRIbqlIwppCxHoLt5Vn3RButzX2_mPWJoVHr4ZDfNs8sbolKQ6iXJ2vFM7s5Xljq3uqRYWhYGpz25bWiIyfkKv9eWfilumnhohdl1YDHYaZJD8tDyAAaaCh08X8X3ytWpc0FrbSF9fMQYhvgT_RECOvag_OptP2UyOi2eQRMG-t__38qixIPnZNrMqCVVinINcd6j6DBe9acL0jcQE31nv9pNssHR39ucXXq_4bpIkpw9D9OJH6Lq40VfzWhyf3Wmc6w-ZYPBQdaAq9I8e66fEk70fg2a9EPcd4S5DtF-qrmj5fWqfqAbswSBHyuxAm6yTASOw"
+            readonly
+          />
+          <button><i class="fa fa-clone"></i></button>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script>
+      let copyText = document.querySelector(".copy-text");
+      copyText.querySelector("button").addEventListener("click", function () {
+        let input = copyText.querySelector("input.text");
+        input.select();
+        document.execCommand("copy");
+        copyText.classList.add("active");
+        window.getSelection().removeAllRanges();
+        setTimeout(function () {
+          copyText.classList.remove("active");
+        }, 2500);
+      });
+    </script>
+  </body>
+</html>
