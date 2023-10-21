@@ -18,7 +18,6 @@ const saveCredentials = async function retrieveConfluencePages(context) {
 
   if (!apiToken) {
     // create an error message with buttons to external website
-    // create an error message with buttons to external website
     vscode.window.showInformationMessage(
       "You must enter your API token",
       ...["Docs", "Get API Token"]
@@ -31,7 +30,7 @@ const saveCredentials = async function retrieveConfluencePages(context) {
     });
     return;
   }
-
+  
   context.globalState.update("EMAIL", email);
   context.globalState.update("API_TOKEN", apiToken);
 };
