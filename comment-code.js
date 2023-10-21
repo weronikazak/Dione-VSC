@@ -18,7 +18,7 @@ async function commentCode(OPENAI_API_KEY, code) {
           content: `${code}`,
         },
       ],
-      model: "gpt-4",
+      model: "gpt-3.5-turbo",
       temperature: 0,
       max_tokens: 1024,
       top_p: 1,
