@@ -1,9 +1,19 @@
 const vscode = require("vscode");
 const axios = require("axios");
-const { API_TOKEN, EMAIL } = require("./globals");
 const fetch = require("node-fetch");
+const saveCredentials = require("./save-credentials");
 
 const updateOrCreatePage = async function retrieveConfluencePages(context) {
+  const API_TOKEN = await context.globalState.get("API_TOKEN");
+  const EMAIL = await context.globalState.get("EMAIL");
+
+  console.log("API_TOKEN " + API_TOKEN);
+  console.log("EMAIL " + EMAIL);
+
+  if (!API_TOKEN || !EMAIL) {
+    saveCredentials(context);
+  }
+
   try {
     var accessToken = undefined;
 
@@ -71,10 +81,10 @@ const updateOrCreatePage = async function retrieveConfluencePages(context) {
     // Check if selected page exists in the pagesDetails dictionary
     if (!pagesDetails[selectedPage]) {
       // Create a new page
-      await createNewPage(selectedDomain, selectedPage);
+      await createNewPage(selectedDomain, selectedPage, EMAIL, API_TOKEN);
     } else {
       // Update a page
-      updateExistingPage(selectedDomain, pagesDetails, selectedPage)
+      updateExistingPage(selectedDomain, pagesDetails, selectedPage, EMAIL, API_TOKEN)
       console.log(
         "selectedPage " + selectedPage + " " + pagesDetails[selectedPage]
       );
@@ -88,7 +98,7 @@ const updateOrCreatePage = async function retrieveConfluencePages(context) {
   }
 };
 
-async function createNewPage(domain, pageTitle) {
+async function createNewPage(domain, pageTitle, EMAIL, API_TOKEN) {
   // get data from the editor of name selectedPage
   const document = vscode.window.activeTextEditor.document.getText();
 
@@ -172,7 +182,7 @@ async function createNewPage(domain, pageTitle) {
     .catch(err => vscode.window.showErrorMessage(err)); 
 }
 
-async function updateExistingPage(domain, pagesDetails, pageTitle) {
+async function updateExistingPage(domain, pagesDetails, pageTitle, EMAIL, API_TOKEN) {
   // get data from the editor of name selectedPage
   const document = vscode.window.activeTextEditor.document.getText();
   const cloudId = pagesDetails[pageTitle];

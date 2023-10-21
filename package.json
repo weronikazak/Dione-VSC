@@ -28,6 +28,10 @@
       {
         "command": "dione.codify",
         "title": "Dione: Codify"
+      },
+      {
+        "command": "dione.saveCredentials",
+        "title": "Dione: Manage Credentials"
       }
     ],
     "menus": {
