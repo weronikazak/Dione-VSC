@@ -1,65 +1,22 @@
-# dione README
+# Dione - Visual Studio Extension
 
-This is the README for your extension "dione". After writing up a brief description, we recommend including the following sections.
+What you will need:
+- your personal Confluence API Token
+- your OpenAI API key
 
-## Features
+## How to get started?
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+1. Install the extension.
 
-For example if there is an image subfolder under your extension project workspace:
+2. Click `ctrl + shift + P` and look for ***Dione: Save Credentials***. Make sure you have your Confluence Token ready. **Use the email you use when logging in to Atlassian.** This is a one time step, you don't have to do it if you used the extension before.
 
-\!\[feature X\]\(images/feature-x.png\)
+3. Click `ctrl + shift + P` and look for ***Dione: Login***. This will take to an external website, where you will get remote access to your Confluence workspace through Dione.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+4. Click `ctrl + shift + P` and find ***Dione: List Pages***. Choose the page you wish to see in your editor. The page is converted to Markdown by default.
 
-## Requirements
+5. In anoter tab, select the code snippet you want to document. Click right button on your mouse and choose ***Dione: Codify*** from the menu. You can do it multiple times.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+6. When you're happy with your changes, click `ctrl + shift + P` again and choose ***Dione: Push Pages***. You should be able to see the changes in your Confluence.
 
-## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code.  Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux)
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux)
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+(Project Repository)[https://github.com/weronikazak/Dione-VSC] 
