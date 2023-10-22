@@ -125,9 +125,9 @@ async function pasteTheCode(apiKey, filePath) {
     const selection = editor.document.getText(editor.selection);
     const commentedCode = await commentCode(apiKey, selection);
     const snippet = `
-<pre><code>
+<table><tr><td><pre><code>
 ${selection}
-</code></pre>
+</code></pre></td></tr></table>
 <p>${commentedCode}</p>
 `;
 

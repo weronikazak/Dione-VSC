@@ -84,7 +84,7 @@ const updateOrCreatePage = async function retrieveConfluencePages(context) {
       await createNewPage(selectedDomain, selectedPage, EMAIL, API_TOKEN);
     } else {
       // Update a page
-      updateExistingPage(selectedDomain, pagesDetails, selectedPage, EMAIL, API_TOKEN)
+      await updateExistingPage(selectedDomain, pagesDetails, selectedPage, EMAIL, API_TOKEN)
       console.log(
         "selectedPage " + selectedPage + " " + pagesDetails[selectedPage]
       );
