@@ -70,5 +70,10 @@
     "turndown": "^7.1.2"
   },
   "icon": "./public/images/dione-icon.png",
-  "pricing": "Free"
+  "pricing": "Free",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/weronikazak/Dione-VSC"
+  },
+  "publisher": "dione"
 }
