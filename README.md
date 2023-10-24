@@ -1,4 +1,4 @@
-<img src="https://github.com/weronikazak/Dione-VSC-Extension/tree/main/public/images/dione-rep.png">
+<img src="https://raw.githubusercontent.com/weronikazak/Dione-VSC-Extension/main/public/images/dione-rep.png">
 
 # Dione - A Visual Studio Extension
 
@@ -33,8 +33,10 @@
 
 - ***Dione: Push Pages***: Once you've made changes to the code, use this command to upload it to your Confluence server.
 
-## Examples
+## Examples:
 
-<img src="https://github.com/weronikazak/Dione-VSC-Extension/tree/main/public/images/code-documentation.gif">
+<img src="https://raw.githubusercontent.com/weronikazak/Dione-VSC-Extension/main/public/images/code-documentation.gif">
 
-**Spotted an issue? [Report it here.](https://github.com/weronikazak/Dione-VSC)**
+## Contact:
+
+**Spotted an issue? [Report it here.](https://github.com/weronikazak/Dione-VSC-Extension)**
