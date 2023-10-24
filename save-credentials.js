@@ -3,20 +3,20 @@ const vscode = require("vscode");
 const saveCredentials = async function retrieveConfluencePages(context) {
   // show a message box to the user to enter the email
   const email = await vscode.window.showInputBox({
-    placeHolder: "Enter your email",
+    placeHolder: "Enter your email (press Enter to skip)",
     prompt: "Enter your email",
   });
 
-  if (!email) {
+  if (!email && !context.globalState.get("EMAIL")) {
     return;
   }
 
   const apiToken = await vscode.window.showInputBox({
-    placeHolder: "Enter your api token",
+    placeHolder: "Enter your api token (press Enter to skip)",
     prompt: "Enter your api token",
   });
 
-  if (!apiToken) {
+  if (!apiToken && !context.globalState.get("API_TOKEN")) {
     // create an error message with buttons to external website
     vscode.window.showInformationMessage(
       "You must enter your API token",
@@ -31,12 +31,14 @@ const saveCredentials = async function retrieveConfluencePages(context) {
     return;
   }
 
+  context.globalState.update("API_TOKEN", apiToken);
+
   const openApi = await vscode.window.showInputBox({
     placeHolder: "Enter your OpenAI API key",
     prompt: "Enter your  OpenAI API key",
   });
 
-  if (!openApi) {
+  if (!openApi && !context.globalState.get("OPENAI_API_KEY")) {
     // create an error message with buttons to external website
     vscode.window.showInformationMessage(
       "You must enter your Open API token",
@@ -49,8 +51,6 @@ const saveCredentials = async function retrieveConfluencePages(context) {
     return;
   }
   
-  context.globalState.update("EMAIL", email);
-  context.globalState.update("API_TOKEN", apiToken);
   context.globalState.update("OPENAI_API_KEY", openApi);
 
   vscode.window.showInformationMessage("Credentials saved successfully!");

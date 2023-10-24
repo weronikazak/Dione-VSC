@@ -1,3 +1,5 @@
+<img src="https://github.com/weronikazak/Dione-VSC-Extension/tree/main/public/images/dione-rep.png">
+
 # Dione - A Visual Studio Extension
 
 ## Prerequisites:
@@ -30,5 +32,9 @@
 - ***Dione: Codify***: This feature employs AI to document any highlighted code. On your first use, you'll be prompted to enter your **[OpenAI key](https://platform.openai.com/account/api-keys)**. Subsequently, you'll be asked if you'd like to create a new document or append the code snippet to an existing one.
 
 - ***Dione: Push Pages***: Once you've made changes to the code, use this command to upload it to your Confluence server.
+
+## Examples
+
+<img src="https://github.com/weronikazak/Dione-VSC-Extension/tree/main/public/images/code-documentation.gif">
 
 **Spotted an issue? [Report it here.](https://github.com/weronikazak/Dione-VSC)**
